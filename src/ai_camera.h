@@ -10,7 +10,7 @@ public:
     virtual ~AiCamera(){}
 
 public:
-    enum register_
+    enum Register
     {
         AI_CAMERA_SYS=0,
         AI_CAMERA_COLOR,
@@ -26,7 +26,7 @@ public:
 
         AI_CAMERA_MAX,
     };
-    enum COLOR_
+    enum Color
     {
         RED=1 ,   // 红色
         GREEN,  // 绿色
@@ -51,8 +51,8 @@ public:
     void get_identify_position(uint8_t features, int16_t position[4], uint8_t index=0);
     uint8_t get_identify_confidence(uint8_t features, uint8_t id);
 protected:
-    uint8_t writeReg(uint8_t reg, uint8_t *data, uint16_t len);
-    uint8_t readReg(uint8_t reg, uint8_t *data, uint16_t len);
+    virtual uint8_t writeReg(uint8_t dev_addr, uint8_t reg, uint8_t *data, uint16_t len);
+    virtual uint8_t readReg(uint8_t dev_addr, uint8_t reg, uint8_t *data, uint16_t len);
 
 private:
     const uint8_t AI_CAMERA_ADDR = 0x24;

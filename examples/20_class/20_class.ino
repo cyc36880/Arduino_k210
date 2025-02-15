@@ -28,7 +28,7 @@ void loop()
     {
         int16_t position[4] = {0};
         uint8_t card_id = ai_camrea_handle.get_identify_id(AiCamera::AI_CAMERA_20_CLASS); // 获取物体识别id
-        ai_camrea_handle.get_identify_position(AiCamera::AI_CAMERA_CARD, position);       // 获取位置信息
+        ai_camrea_handle.get_identify_position(AiCamera::AI_CAMERA_20_CLASS, position);       // 获取位置信息
 
         Serial.printf("card: %s, position: %d, %d, %d, %d\n", card_name[card_id], position[0], position[1], position[2], position[3]);
     }

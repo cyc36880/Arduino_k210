@@ -147,7 +147,7 @@ static uint8_t writeReg(TwoWire *wire, uint8_t dev_addr, uint8_t reg, uint8_t *d
         wire->write(reg);
         while (len--)
         {
-            wire->write(*data++);
+            wire->write(*(data++));
         }
         wire->endTransmission(true);
     }
@@ -167,10 +167,11 @@ static uint8_t readReg(TwoWire *wire, uint8_t dev_addr, uint8_t reg, uint8_t *da
         wire->write(reg);
         wire->endTransmission(false);
 
-        wire->requestFrom(dev_addr, len);
+        wire->requestFrom((uint8_t)dev_addr, (uint8_t)len);
         while (wire->available())
         {
-            *data++ = wire->read();
+            *data = wire->read();
+            data++;
         }
     }
     catch (...)
@@ -181,14 +182,14 @@ static uint8_t readReg(TwoWire *wire, uint8_t dev_addr, uint8_t reg, uint8_t *da
 }
 
 
-uint8_t AiCamera::writeReg(uint8_t reg, uint8_t *data, uint16_t len)
+uint8_t AiCamera::writeReg(uint8_t dev_addr, uint8_t reg, uint8_t *data, uint16_t len)
 {
-    return ::writeReg(this->_wire, this->AI_CAMERA_ADDR, reg, data, len);
+    return ::writeReg(this->_wire, dev_addr, reg, data, len);
 }
 
-uint8_t AiCamera::readReg(uint8_t reg, uint8_t *data, uint16_t len)
+uint8_t AiCamera::readReg(uint8_t dev_addr, uint8_t reg, uint8_t *data, uint16_t len)
 {
-    return ::readReg(this->_wire, this->AI_CAMERA_ADDR, reg, data, len);
+    return ::readReg(this->_wire, dev_addr, reg, data, len);
 }
 
 
@@ -196,45 +197,45 @@ void AiCamera::set_sys_mode(uint8_t mode)
 {
     if (mode < 1) return;
     mode-=1;
-    this->writeReg(get_register_addr(AiCamera::AI_CAMERA_SYS, 0), &mode, 1);
+    this->writeReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_SYS, 0), &mode, 1);
 }
 
 uint8_t AiCamera::get_sys_mode(void)
 {
     uint8_t mode=0;
-    this->readReg(get_register_addr(AiCamera::AI_CAMERA_SYS, 0), &mode, 1);
+    this->readReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_SYS, 0), &mode, 1);
     return mode+1;
 }
 
 void AiCamera::get_color_rgb(uint8_t rgb[3])
 {
-    this->readReg(get_register_addr(AiCamera::AI_CAMERA_COLOR, 0), rgb, 3);
+    this->readReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_COLOR, 0), rgb, 3);
 }
 
 
 void AiCamera::set_find_color(uint8_t color_id)
 {
-    this->writeReg(get_register_addr(AiCamera::AI_CAMERA_PATCH, 0), &color_id, 1);
+    this->writeReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_PATCH, 0), &color_id, 1);
 }
 
 void AiCamera::face_study(void)
 {
     uint8_t study = 1;
-    this->writeReg(get_register_addr(AiCamera::AI_CAMERA_FACE_RE, 0x06), &study, 1);
+    this->writeReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_FACE_RE, 0x06), &study, 1);
 }
 
 void AiCamera::deep_learn_study(void)
 {
     uint8_t study = 1;
-    this->writeReg(get_register_addr(AiCamera::AI_CAMERA_DEEP_LEARN, 0x00), &study, 1);
+    this->writeReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_DEEP_LEARN, 0x00), &study, 1);
 }
 
 std::string AiCamera::get_qrcode_content(void)
 {
     uint8_t len = 0;
-    this->readReg(get_register_addr(AiCamera::AI_CAMERA_QRCODE, 0x01), &len, 1);
+    this->readReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_QRCODE, 0x01), &len, 1);
     char *qrcode = new char[len+1];
-    this->readReg(get_register_addr(AiCamera::AI_CAMERA_QRCODE, 0x03), (uint8_t *)qrcode, len);
+    this->readReg(this->AI_CAMERA_ADDR, get_register_addr(AiCamera::AI_CAMERA_QRCODE, 0x03), (uint8_t *)qrcode, len);
     qrcode[len] = '\0';
     std::string str(qrcode);
     delete[] qrcode;
@@ -249,7 +250,7 @@ uint8_t AiCamera::get_identify_num(uint8_t features, uint8_t total)
     {
         if (1 == total)
         {
-            this->readReg(targat_base_addr+0, &identify_num, 1);
+            this->readReg(this->AI_CAMERA_ADDR, targat_base_addr+0, &identify_num, 1);
             return identify_num;
         }
     }
@@ -257,7 +258,7 @@ uint8_t AiCamera::get_identify_num(uint8_t features, uint8_t total)
     uint8_t num_addr = obj->num;
     if (0 == num_addr) return 0;
     num_addr -=1;
-    this->readReg(targat_base_addr+num_addr, &identify_num, 1);
+    this->readReg(this->AI_CAMERA_ADDR, targat_base_addr+num_addr, &identify_num, 1);
     return identify_num;
 }
 
@@ -270,7 +271,7 @@ uint8_t AiCamera::get_identify_id(uint8_t features, uint8_t index)
     if (obj->id > 0)
     {
         uint8_t _offset = obj->id-1;
-        this->readReg(target_base_addr+_offset, &identify_id, 1);
+        this->readReg(this->AI_CAMERA_ADDR, target_base_addr+_offset, &identify_id, 1);
         return identify_id;
     }
     else if (NULL != obj->sub)
@@ -281,7 +282,7 @@ uint8_t AiCamera::get_identify_id(uint8_t features, uint8_t index)
             uint8_t _offset = obj->sub->id-1;
             uint8_t sub_size = get_obj_sub_size(obj->sub);
             uint8_t *sub_info_buf = new uint8_t[sub_size];
-            this->readReg(target_base_addr+id_offset+index, sub_info_buf, sub_size);
+            this->readReg(this->AI_CAMERA_ADDR, target_base_addr+id_offset+index, sub_info_buf, sub_size);
             delete[] sub_info_buf;
             return sub_info_buf[_offset];
         }
@@ -305,7 +306,7 @@ int16_t AiCamera::get_identify_rotation(uint8_t features, uint8_t index)
         uint8_t _offset = sub->rot-1;
         uint8_t sub_size = get_obj_sub_size(sub);
         uint8_t *sub_info_buf = new uint8_t[sub_size];
-        this->readReg(target_base_addr+rot_offset+index, sub_info_buf, sub_size);
+        this->readReg(this->AI_CAMERA_ADDR, target_base_addr+rot_offset+index, sub_info_buf, sub_size);
         rot[0] = sub_info_buf[_offset];
         rot[1] = sub_info_buf[_offset+1];
         delete[] sub_info_buf;
@@ -321,7 +322,7 @@ void AiCamera::get_identify_position(uint8_t features, int16_t position[4], uint
     if (obj->pos > 0)
     {
         uint8_t _offset = obj->pos-1;
-        this->readReg(target_base_addr+_offset, position_buf, 8);
+        this->readReg(this->AI_CAMERA_ADDR, target_base_addr+_offset, position_buf, 8);
     }
     else if (NULL != obj->sub)
     {
@@ -330,7 +331,7 @@ void AiCamera::get_identify_position(uint8_t features, int16_t position[4], uint
         uint8_t _offset = sub->pos-1;
         uint8_t sub_size = get_obj_sub_size(sub);
         uint8_t *sub_info_buf = new uint8_t[sub_size];
-        this->readReg(target_base_addr+pos_offset+index, sub_info_buf, sub_size);
+        this->readReg(this->AI_CAMERA_ADDR, target_base_addr+pos_offset+index, sub_info_buf, sub_size);
         for (uint8_t i=0; i<8; i++)
         {
             position_buf[i] = sub_info_buf[i+_offset];
@@ -350,7 +351,7 @@ uint8_t AiCamera::get_identify_confidence(uint8_t features, uint8_t id)
     if (features != AiCamera::AI_CAMERA_DEEP_LEARN || id > 3)
         return 0;
     uint8_t target_base_addr = get_register_addr(features, 3);
-    this->readReg(target_base_addr, confidence_list, 4);
+    this->readReg(this->AI_CAMERA_ADDR, target_base_addr, confidence_list, 4);
     return confidence_list[id];
 }
 
