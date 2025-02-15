@@ -6,7 +6,7 @@
 class AiCamera 
 {
 public:
-    AiCamera() {};
+    AiCamera(uint8_t addr=0x24):AI_CAMERA_ADDR(addr) {};
     virtual ~AiCamera(){}
 
 public:
@@ -55,6 +55,6 @@ protected:
     virtual uint8_t readReg(uint8_t dev_addr, uint8_t reg, uint8_t *data, uint16_t len);
 
 private:
-    const uint8_t AI_CAMERA_ADDR = 0x24;
+    const uint8_t AI_CAMERA_ADDR;
     TwoWire *_wire=NULL;
 };
