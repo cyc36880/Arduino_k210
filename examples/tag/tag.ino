@@ -8,31 +8,40 @@
 #include <Arduino.h>
 #include "ai_camera.h"
 
-#include "Wire.h"
 
 // 设置 ai 视觉模块操作句柄
 AiCamera ai_camrea_handle;
 
 void setup()
 {
-    Serial.begin(115200);                                   // 初始化串口
-    Wire.begin();                                           // 初始化iic
-    ai_camrea_handle.Init(&Wire);                           // 绑定IIC操作对象
-    ai_camrea_handle.set_sys_mode(AiCamera::AI_CAMERA_TAG); // 设置模式为标签识别模式
-    delay(1000);                                            // 等待切换完成
+    Serial.begin(115200);                         // 初始化串口
+    ai_camrea_handle.Init();                      // 绑定IIC操作对象
+    ai_camrea_handle.set_sys_mode(AI_CAMERA_TAG); // 设置模式为标签识别模式
+    delay(1000);                                  // 等待切换完成
 }
 
 void loop()
 {
-    if (ai_camrea_handle.get_identify_num(AiCamera::AI_CAMERA_TAG) > 0) // 判断是否有标签
+    if (ai_camrea_handle.get_identify_num(AI_CAMERA_TAG) > 0) // 判断是否有标签
     {
-        uint16_t rot = 0;
-        int16_t position[4] = {0};
-        uint8_t tag_id = ai_camrea_handle.get_identify_id(AiCamera::AI_CAMERA_TAG); // 获取标签ID
-        ai_camrea_handle.get_identify_position(AiCamera::AI_CAMERA_TAG, position);  // 获取位置信息
-        rot = ai_camrea_handle.get_identify_rotation(AiCamera::AI_CAMERA_TAG);      // 获取旋转角度
+        int rot = 0;
+        int position[4] = {0};
+        int tag_id = ai_camrea_handle.get_identify_id(AI_CAMERA_TAG);     // 获取标签ID
+        ai_camrea_handle.get_identify_position(AI_CAMERA_TAG, position);  // 获取位置信息
+        rot = ai_camrea_handle.get_identify_rotation(AI_CAMERA_TAG);      // 获取旋转角度
 
-        Serial.printf("Tag ID: %d, rot:%d, Position: (%d, %d, %d, %d)\n", tag_id, rot, position[0], position[1], position[2], position[3]);
+        Serial.print("Tag ID: ");
+        Serial.print(tag_id);
+        Serial.print(", rot: ");
+        Serial.print(rot);
+        Serial.print(", Position: (");
+        Serial.print(position[0]);
+        Serial.print(", ");
+        Serial.print(position[1]);
+        Serial.print(", ");
+        Serial.print(position[2]);
+        Serial.print(", ");
+        Serial.println(position[3]);
     }
     else
     {
