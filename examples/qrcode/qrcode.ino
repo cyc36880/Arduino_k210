@@ -33,13 +33,13 @@ void loop()
         Serial.print(", ");
         Serial.println(position[3]);
 
-        std::string qrcode_content = ai_camrea_handle.get_qrcode_content(); // 获取二维码内容
+        String qrcode_content = ai_camrea_handle.get_qrcode_content(); // 获取二维码内容
         Serial.print("QRcode content: ");
-        Serial.println(qrcode_content.c_str());
+        Serial.println(qrcode_content);
     }
     else
     {
-        Serial.printf("No QRcode\n");
+        Serial.println("No QRcode\n");
     }
     delay(400);
 }

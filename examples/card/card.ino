@@ -38,6 +38,6 @@ void loop()
     }
     else
     {
-        Serial.printf("No card detected\n");
+        Serial.println("No card detected");
     }
 }
