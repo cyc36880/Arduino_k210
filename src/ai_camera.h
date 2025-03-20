@@ -3,6 +3,12 @@
 #include "Arduino.h"
 #include "Wire.h"
 
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
+  // AVR 平台（如 Arduino Nano）不支持 std::string
+#else
+  // 其他平台（如 ESP32、STM32）可能支持
+  #include <string>
+#endif
 
 enum Register
 {
@@ -35,7 +41,7 @@ enum Color
 class AiCamera 
 {
 public:
-    AiCamera(uint8_t addr=0x24):DEV_ADDR(addr) {};
+    AiCamera(uint8_t addr=0x24);
 
 public:
     void Init(int sda=-1, int scl=-1) 
@@ -49,7 +55,7 @@ public:
     void set_find_color(uint8_t color_id);
     void face_study(void);
     void deep_learn_study(void);
-    std::string get_qrcode_content(void);
+    String get_qrcode_content(void);
     uint8_t get_identify_num(uint8_t features, uint8_t total=0);
     uint8_t get_identify_id(uint8_t features, uint8_t index=0);
     int16_t get_identify_rotation(uint8_t features, uint8_t index=0);
@@ -59,7 +65,8 @@ public:
 protected:
     virtual uint8_t writeReg(uint8_t dev_addr, uint8_t reg, uint8_t *data, uint16_t len);
     virtual uint8_t readReg(uint8_t dev_addr, uint8_t reg, uint8_t *data, uint16_t len);
-
+    virtual uint8_t isOnline(uint8_t dev_addr);
+    
 private:
     const uint8_t DEV_ADDR;
     TwoWire *_wire=NULL;
