@@ -127,7 +127,7 @@ static uint8_t readReg(TwoWire *wire, uint8_t dev_addr, uint8_t reg, uint8_t *da
 static uint8_t isOnline(TwoWire *wire, uint8_t dev_addr)
 {
     if (NULL == wire)
-        return 0;
+        return 1;
     wire->beginTransmission(dev_addr);
     return wire->endTransmission(true);
 }
