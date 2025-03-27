@@ -8,7 +8,6 @@
 #include <Arduino.h>
 #include "ai_camera.h"
 
-
 // 设置 ai 视觉模块操作句柄
 AiCamera ai_camrea_handle;
 
@@ -26,9 +25,9 @@ void loop()
     {
         int rot = 0;
         int position[4] = {0};
-        int tag_id = ai_camrea_handle.get_identify_id(AI_CAMERA_TAG);     // 获取标签ID
-        ai_camrea_handle.get_identify_position(AI_CAMERA_TAG, position);  // 获取位置信息
-        rot = ai_camrea_handle.get_identify_rotation(AI_CAMERA_TAG);      // 获取旋转角度
+        int tag_id = ai_camrea_handle.get_identify_id(AI_CAMERA_TAG);    // 获取标签ID
+        ai_camrea_handle.get_identify_position(AI_CAMERA_TAG, position); // 获取位置信息
+        rot = ai_camrea_handle.get_identify_rotation(AI_CAMERA_TAG);     // 获取旋转角度
 
         Serial.print("Tag ID: ");
         Serial.print(tag_id);
@@ -41,7 +40,8 @@ void loop()
         Serial.print(", ");
         Serial.print(position[2]);
         Serial.print(", ");
-        Serial.println(position[3]);
+        Serial.print(position[3]);
+        Serial.println(")");
     }
     else
     {

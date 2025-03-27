@@ -10,7 +10,7 @@
   #include <string>
 #endif
 
-enum Register
+enum AI_CAMERA_Register
 {
     AI_CAMERA_SYS=0,
     AI_CAMERA_COLOR,
@@ -27,7 +27,7 @@ enum Register
     AI_CAMERA_MAX,
 };
 
-enum Color
+enum AI_CAMERA_Color
 {
     AI_CAMERA_COLOR_RED=1 , // 红色
     AI_CAMERA_COLOR_GREEN,  // 绿色

@@ -15,7 +15,7 @@ void setup()
 {
     Serial.begin(115200); // 初始化串口
     ai_camrea_handle.Init();
-    ai_camrea_handle.set_sys_mode(AI_CAMERA_FACE_RE); // 设置模式为二维码识别模式
+    ai_camrea_handle.set_sys_mode(AI_CAMERA_FACE_RE); // 设置模式为人脸识别模式
     delay(1000);                                      // 等待切换完成
 }
 
