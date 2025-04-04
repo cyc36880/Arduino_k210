@@ -306,7 +306,7 @@ uint8_t AiCamera::get_identify_id(uint8_t features, uint8_t index)
             uint8_t sub_size = get_obj_sub_size(obj->sub);
             uint8_t *sub_info_buf = new uint8_t[sub_size];
             this->readReg(this->DEV_ADDR, target_base_addr + id_offset + index, sub_info_buf, sub_size);
-            identify_id = sub_info_buf[_offset]
+            identify_id = sub_info_buf[_offset];
             delete[] sub_info_buf;
             return identify_id;
         }
