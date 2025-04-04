@@ -40,4 +40,5 @@ void loop()
     {
         Serial.println("No card detected");
     }
+    delay(400);
 }
