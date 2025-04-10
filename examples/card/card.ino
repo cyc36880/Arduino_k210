@@ -5,6 +5,17 @@
 #include <Arduino.h>
 #include "ai_camera.h"
 
+/**
+ * id 对应的物体名称
+ * 0: ["绿灯", "green"],
+ * 1: ["左转", "left"],
+ * 2: ["停车", "park"],
+ * 3: ["红灯", "red"],
+ * 4: ["右转", "right"],
+ * 5: ["鸣笛", "whistle"]
+ */
+
+
 // 设置 ai 视觉模块操作句柄
 AiCamera ai_camrea_handle;
 

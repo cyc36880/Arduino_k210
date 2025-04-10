@@ -252,6 +252,14 @@ void AiCamera::get_color_rgb(int rgb[3])
         rgb[i] = color[i];
     }
 }
+void AiCamera::get_color_rgb(int &r, int &g, int &b)
+{
+    int rgb[3] = {0};
+    this->get_color_rgb(rgb);
+    r = rgb[0];
+    g = rgb[1];
+    b = rgb[2];
+}
 
 void AiCamera::set_find_color(uint8_t color_id)
 {
@@ -301,6 +309,18 @@ uint8_t AiCamera::get_identify_num(AI_CAMERA_REGISTER_t features, uint8_t total)
     num_addr -= 1;
     this->readReg(this->DEV_ADDR, targat_base_addr + num_addr, &identify_num, 1);
     return identify_num;
+}
+
+uint8_t AiCamera::get_face_attributes(int &is_male, int &is_mouth_open, int &is_smail, int &is_glasses, uint8_t index)
+{
+    uint8_t ret = 0;
+    uint8_t attr_buf[4] = {0};
+    ret =  this->readReg(this->DEV_ADDR, get_register_addr(AI_CAMERA_FACE_ATTRIBUTE, 0x05+index), attr_buf, 4);
+    is_male = attr_buf[0];
+    is_mouth_open = attr_buf[1];
+    is_smail = attr_buf[2];
+    is_glasses = attr_buf[3];
+    return ret;
 }
 
 uint8_t AiCamera::get_identify_id(AI_CAMERA_REGISTER_t features, uint8_t index)
@@ -387,6 +407,16 @@ void AiCamera::get_identify_position(AI_CAMERA_REGISTER_t features, int position
         _position[i] = (int16_t)(((uint16_t)position_buf[i * 2] << 8) | position_buf[i * 2 + 1]);
         position[i] = _position[i];
     }
+}
+
+void AiCamera::get_identify_position(AI_CAMERA_REGISTER_t features, int &x, int &y, int &w, int &h, uint8_t index)
+{
+    int position[4] = {0};
+    this->get_identify_position(features, position, index);
+    x = position[0];
+    y = position[1];
+    w = position[2];
+    h = position[3];
 }
 
 uint8_t AiCamera::get_identify_confidence(AI_CAMERA_REGISTER_t features, uint8_t id)

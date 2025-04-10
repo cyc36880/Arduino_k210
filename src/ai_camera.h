@@ -19,8 +19,8 @@ typedef enum
     AI_CAMERA_LINE,
     AI_CAMERA_20_CLASS,
     AI_CAMERA_QRCODE,
-    AI_CAMERA_FACE_DE, // 人脸检测
-    AI_CAMERA_FACE_RE, // 人脸识别
+    AI_CAMERA_FACE_ATTRIBUTE, // 人脸属性
+    AI_CAMERA_FACE_RE,        // 人脸识别
     AI_CAMERA_DEEP_LEARN,
     AI_CAMERA_CARD,
     AI_CAMERA_WIFI_SERVER,           // 无线图传
@@ -52,17 +52,24 @@ public:
         Wire.begin();
         _wire=&Wire;
     }
+    void begin(int sda=-1, int scl=-1)
+    {
+        Init(sda, scl);
+    }
     void set_sys_mode(AI_CAMERA_REGISTER_t mode);
     uint8_t get_sys_mode(void);
     void get_color_rgb(int rgb[3]);
+    void get_color_rgb(int &r, int &g, int &b);
     void set_find_color(uint8_t color_id);
     void face_study(void);
     void deep_learn_study(void);
     String get_qrcode_content(void);
     uint8_t get_identify_num(AI_CAMERA_REGISTER_t features, uint8_t total=0);
+    uint8_t get_face_attributes(int &is_male, int &is_mouth_open, int &is_smail, int &is_glasses, uint8_t index=0);
     uint8_t get_identify_id(AI_CAMERA_REGISTER_t features, uint8_t index=0);
     int16_t get_identify_rotation(AI_CAMERA_REGISTER_t features, uint8_t index=0);
     void get_identify_position(AI_CAMERA_REGISTER_t features, int position[4], uint8_t index=0);
+    void get_identify_position(AI_CAMERA_REGISTER_t features, int &x, int &y, int &w, int &h, uint8_t index=0);
     uint8_t get_identify_confidence(AI_CAMERA_REGISTER_t features, uint8_t id);
 
     uint8_t set_wifi_server_is_scan_qrcode(bool is_scan);
