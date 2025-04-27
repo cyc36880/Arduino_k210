@@ -47,11 +47,13 @@ public:
     AiCamera(uint8_t addr=0x24);
 
 public:
+    void Init(TwoWire *wire) { _wire=wire;}
     void Init(int sda=-1, int scl=-1) 
     { 
-        Wire.begin();
+        Wire.begin(sda, scl);
         _wire=&Wire;
     }
+    void begin(TwoWire *wire) { Init(wire); }
     void begin(int sda=-1, int scl=-1)
     {
         Init(sda, scl);
