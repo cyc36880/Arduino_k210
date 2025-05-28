@@ -96,7 +96,16 @@ static uint8_t get_obj_sub_size(const ai_camera_sub_t *sub)
     if (NULL == sub)
         return 0;
     if (sub->id)
-        info_size += 1;
+    {
+        if (&obj_tag_sub == sub)
+        {
+            info_size += 2;
+        }
+        else
+        {
+            info_size += 1;
+        }
+    }
     if (sub->rot)
         info_size += 2;
     if (sub->pos)
@@ -175,8 +184,8 @@ AiCamera::AiCamera(uint8_t addr) : DEV_ADDR(addr)
     // 标签
     obj_tag_sub.base_addr = 0x02;
     obj_tag_sub.id = 1;
-    obj_tag_sub.rot = 2;
-    obj_tag_sub.pos = 4;
+    obj_tag_sub.rot = 3;
+    obj_tag_sub.pos = 5;
 
     obj_tag.num = 0x01;
     obj_tag.sub = &obj_tag_sub;
@@ -323,16 +332,17 @@ uint8_t AiCamera::get_face_attributes(int &is_male, int &is_mouth_open, int &is_
     return ret;
 }
 
-uint8_t AiCamera::get_identify_id(AI_CAMERA_REGISTER_t features, uint8_t index)
+uint16_t AiCamera::get_identify_id(AI_CAMERA_REGISTER_t features, uint8_t index)
 {
-    uint8_t identify_id = 0;
+    uint16_t ret_val = 0;
+    uint8_t identify_id[2] = {0};
     uint8_t target_base_addr = get_register_addr(features, 0);
     const ai_element_t *obj = obj_list[features];
     if (obj->id > 0)
     {
         uint8_t _offset = obj->id - 1;
-        this->readReg(this->DEV_ADDR, target_base_addr + _offset, &identify_id, 1);
-        return identify_id;
+        this->readReg(this->DEV_ADDR, target_base_addr + _offset, identify_id, 1);
+        ret_val = identify_id[0];
     }
     else if (NULL != obj->sub)
     {
@@ -343,14 +353,20 @@ uint8_t AiCamera::get_identify_id(AI_CAMERA_REGISTER_t features, uint8_t index)
             uint8_t sub_size = get_obj_sub_size(obj->sub);
             uint8_t *sub_info_buf = new uint8_t[sub_size];
             this->readReg(this->DEV_ADDR, target_base_addr + id_offset + index, sub_info_buf, sub_size);
-            identify_id = sub_info_buf[_offset];
+            if (AI_CAMERA_TAG == features)
+            {
+                ret_val = (((uint16_t)sub_info_buf[_offset])<<8) | (uint16_t)sub_info_buf[_offset + 1];
+            }
+            else
+            {
+                ret_val = sub_info_buf[_offset];
+            }
             delete[] sub_info_buf;
-            return identify_id;
         }
         else
             return 0;
     }
-    return 0;
+    return ret_val;
 }
 
 int16_t AiCamera::get_identify_rotation(AI_CAMERA_REGISTER_t features, uint8_t index)
