@@ -320,12 +320,12 @@ uint8_t AiCamera::get_identify_num(AI_CAMERA_REGISTER_t features, uint8_t total)
     return identify_num;
 }
 
-uint8_t AiCamera::get_face_attributes(int &is_male, int &is_mouth_open, int &is_smail, int &is_glasses, uint8_t index)
+uint8_t AiCamera::get_face_attributes(int &is_mouth_open, int &is_smail, int &is_glasses, uint8_t index)
 {
     uint8_t ret = 0;
     uint8_t attr_buf[4] = {0};
     ret =  this->readReg(this->DEV_ADDR, get_register_addr(AI_CAMERA_FACE_ATTRIBUTE, 0x05+index), attr_buf, 4);
-    is_male = attr_buf[0];
+    // is_male = attr_buf[0];
     is_mouth_open = attr_buf[1];
     is_smail = attr_buf[2];
     is_glasses = attr_buf[3];
