@@ -67,6 +67,7 @@ static const ai_element_t obj_ur_image_det = {0};
 // 自定义 图像分类
 static const ai_element_t obj_image_class = {0};
 
+static const ai_element_t obj_setting = {0};
 
 static const ai_element_t *obj_list[] = {
     &obj_sys,
@@ -83,6 +84,7 @@ static const ai_element_t *obj_list[] = {
     &obj_wifi_server,
     &obj_ur_image_det,
     &obj_image_class,
+    &obj_setting,
 };
 
 static uint8_t get_register_addr(uint8_t obj_id, uint8_t offset)
@@ -445,6 +447,21 @@ uint8_t AiCamera::get_identify_confidence(AI_CAMERA_REGISTER_t features, uint8_t
     return confidence_list[id];
 }
 
+uint8_t AiCamera::set_light_brightness(uint8_t brightness)
+{
+    uint8_t ret=0;
+    uint8_t target_base_addr = get_register_addr(AI_CAMERA_SETTING, 0);
+    ret += this->writeReg(this->DEV_ADDR, target_base_addr, &brightness, 1);
+    return ret;
+}
+
+uint8_t AiCamera::get_light_brightness(uint8_t &brightness)
+{
+    uint8_t ret=0;
+    uint8_t target_base_addr = get_register_addr(AI_CAMERA_SETTING, 0);
+    ret += this->readReg(this->DEV_ADDR, target_base_addr, &brightness, 1);
+    return ret;
+}
 
 
 uint8_t AiCamera::set_wifi_server_is_scan_qrcode(bool is_scan)

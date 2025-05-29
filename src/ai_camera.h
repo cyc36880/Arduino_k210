@@ -23,9 +23,8 @@ typedef enum
     AI_CAMERA_FACE_RE,        // 人脸识别
     AI_CAMERA_DEEP_LEARN,
     AI_CAMERA_CARD,
-    AI_CAMERA_WIFI_SERVER,           // 无线图传
-    // AI_CAMERA_USER_IMAGE_DETECTION,  // 图像检测
-    // AI_CAMERA_UR_IMAGE_CLASS,        // 图像分类
+    AI_CAMERA_WIFI_SERVER,    // 无线图传
+    AI_CAMERA_SETTING,        // 设置
 
     AI_CAMERA_MAX,
 } AI_CAMERA_REGISTER_t ;
@@ -73,6 +72,9 @@ public:
     void get_identify_position(AI_CAMERA_REGISTER_t features, int position[4], uint8_t index=0);
     void get_identify_position(AI_CAMERA_REGISTER_t features, int &x, int &y, int &w, int &h, uint8_t index=0);
     uint8_t get_identify_confidence(AI_CAMERA_REGISTER_t features, uint8_t id);
+
+    uint8_t set_light_brightness(uint8_t brightness);
+    uint8_t get_light_brightness(uint8_t &brightness);
 
     uint8_t set_wifi_server_is_scan_qrcode(bool is_scan);
     uint8_t get_wifi_server_ssid_passward(String &ssid, String &password);
