@@ -447,6 +447,15 @@ uint8_t AiCamera::get_identify_confidence(AI_CAMERA_REGISTER_t features, uint8_t
     return confidence_list[id];
 }
 
+uint8_t AiCamera::set_light_status(uint8_t status)
+{
+    uint8_t ret=0;
+    uint8_t target_base_addr = get_register_addr(AI_CAMERA_SETTING, 1);
+    status = status ? 1 : 0;
+    ret += this->writeReg(this->DEV_ADDR, target_base_addr, &status, 1);
+    return ret;
+}
+
 uint8_t AiCamera::set_light_brightness(uint8_t brightness)
 {
     uint8_t ret=0;
