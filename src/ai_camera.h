@@ -49,7 +49,11 @@ public:
     void Init(TwoWire *wire) { _wire=wire;}
     void Init(int sda=-1, int scl=-1) 
     { 
+#if defined(__AVR__) || defined(ARDUINO_ARCH_AVR)
+        Wire.begin();
+#else
         Wire.begin(sda, scl);
+#endif
         _wire=&Wire;
     }
     void begin(TwoWire *wire) { Init(wire); }
